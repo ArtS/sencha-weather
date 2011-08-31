@@ -7,19 +7,27 @@
 
     Weather.controllers.weather = Ext.regController('weather', {
 
+        loaded: false,
+
         listCities: function() {
             var townIDs = ['2018708', '1103816', '1105779', '1099805', '1100661', '1098081', '1100968']
               , data = []
               , i = 0
               , store = Ext.getStore('CitiesStore')
+              , ctrl = Ext.ControllerManager.get('weather')
 
             Weather.viewport.setActiveItem(Ext.getCmp('citiesList'), 'slide')
+
+            if (this.loaded)
+                return
 
             function doneLoading() {
                 store.loadData(data)
 
                 // Let subscribers know that loading finished
                 store.fireEvent('load')
+
+                ctrl.loaded = true
             }
 
             function getNextTownData() {
@@ -50,7 +58,18 @@
             getNextTownData()
         },
 
+        backToList: function() {
+            Ext.dispatch({
+                controller: 'weather',
+                action: 'list',
+                historyUrl: 'weather/listCities'
+            })
+        },
+
         refreshDetails: function() {
+            var ctrl = Ext.ControllerManager.get('weather')
+            ctrl.loaded = false
+            ctrl.list()
         },
 
         details: function(opts) {
@@ -58,6 +77,7 @@
             var data
               , i = 0
               , store = Ext.getStore('CitiesStore')
+              , formData
 
             Weather.viewport.setActiveItem(Ext.getCmp('details'), 'slide')
 
@@ -69,6 +89,22 @@
             }
 
             Ext.getCmp('detailsToolbar').setTitle(data.location.city)
+
+            formData = Ext.ModelMgr.create({
+                wind: Math.round(data.wind.speed) + ' ' + data.wind.direction,
+                sunrise: data.astronomy.sunrise,
+                sunset: data.astronomy.sunset,
+                condition_now: data.condition.text,
+                temp_now: Math.round(data.condition.temperature) + ' C',
+                temp_today: Weather.utils.getCelsius(data.forecast[0].low_temperature) + ' - ' +
+                            Weather.utils.getCelsius(data.forecast[0].high_temperature) + 'C',
+                condition_today: data.forecast[0].condition,
+                temp_tomorrow: Weather.utils.getCelsius(data.forecast[1].low_temperature) + ' - ' +
+                               Weather.utils.getCelsius(data.forecast[1].high_temperature) + 'C',
+                condition_tomorrow: data.forecast[1].condition
+            }, 'City')
+
+            Ext.getCmp('detailsForm').load(formData)
 
         }
     })

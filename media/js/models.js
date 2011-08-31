@@ -22,4 +22,17 @@
     Ext.regStore('CitiesStore', new Ext.data.JsonStore({
         model: 'LabelText'
     }))
+
+    Ext.regModel('City', {
+        fields: [
+            'wind',
+            'sunrise',
+            'sunset',
+            'condition_now',
+            'temp_today',
+            'condition_today',
+            'temp_tomorrow',
+            'condition_tomorrow'
+        ]
+    })
 })()
