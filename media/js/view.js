@@ -87,6 +87,9 @@
                 }
               }),
         listeners: {
+            itemtap: function(me, i, el, evt) {
+                this.handleItemDisclosure(evt, el)
+            },
             disclose: function(rec) {
                 Ext.dispatch({
                     controller: 'weather',
