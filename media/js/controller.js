@@ -61,7 +61,7 @@
         backToList: function() {
             Ext.dispatch({
                 controller: 'weather',
-                action: 'list',
+                action: 'listCities',
                 historyUrl: 'weather/listCities'
             })
         },
@@ -96,10 +96,10 @@
                 sunset: data.astronomy.sunset,
                 condition_now: data.condition.text,
                 temp_now: Math.round(data.condition.temperature) + ' C',
-                temp_today: Weather.utils.getCelsius(data.forecast[0].low_temperature) + ' - ' +
+                temp_today: Weather.utils.getCelsius(data.forecast[0].low_temperature) + ' ... ' +
                             Weather.utils.getCelsius(data.forecast[0].high_temperature) + 'C',
                 condition_today: data.forecast[0].condition,
-                temp_tomorrow: Weather.utils.getCelsius(data.forecast[1].low_temperature) + ' - ' +
+                temp_tomorrow: Weather.utils.getCelsius(data.forecast[1].low_temperature) + ' ... ' +
                                Weather.utils.getCelsius(data.forecast[1].high_temperature) + 'C',
                 condition_tomorrow: data.forecast[1].condition
             }, 'City')
